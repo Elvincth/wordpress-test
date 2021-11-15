@@ -13,7 +13,7 @@ services:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: d2Oqadruj9*
-    # platform: linux/amd64 #for m1 chip remove it for non amd64 device
+    platform: linux/amd64 #for m1 chip remove it for non amd64 device
 
   wordpress:
     container_name: wordpress
@@ -38,7 +38,8 @@ services:
       - '80:80'
     volumes:
       - ./nginx:/etc/nginx/conf.d
-      - ./wordpress_data:/var/www/html
+      - ./logs/nginx:/var/log/nginx
+      - ./wordpress:/var/www/html
     ports:
       - 8080:80
     links:
