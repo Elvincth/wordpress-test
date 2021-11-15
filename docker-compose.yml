@@ -31,19 +31,42 @@ services:
       WORDPRESS_DB_PASSWORD: d2Oqadruj9*
       WORDPRESS_DB_NAME: wordpress
 
-  nginx:
-    container_name: nginx
-    image: nginx:alpine
-    ports:
-      - '80:80'
+  elasticsearch:
+    container_name: es
+    image: "docker.elastic.co/elasticsearch/elasticsearch:7.15.1"
     volumes:
-      - ./nginx:/etc/nginx/conf.d
-      - ./logs/nginx:/var/log/nginx
-      - ./wordpress:/var/www/html
+      - ./es-data:/usr/share/elasticsearch/data
     ports:
-      - 8080:80
-    links:
-      - wordpress
+      - "9200:9200"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      discovery.type: single-node
+    networks:
+      - elk
+
+  kibana:
+    container_name: kb
+    image: "docker.elastic.co/kibana/kibana:7.15.1"
+    ports:
+      - "5601:5601"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
+  filebeat:
+    container_name: fb
+    image: "docker.elastic.co/beats/filebeat:7.15.1"
+    user: root
+    volumes:
+      - ./percona-data:/var/percona-data:ro
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+    networks:
+      - elk
+
+networks:
+  elk:
+    driver: bridge
 
 volumes:
   db_data: {}
