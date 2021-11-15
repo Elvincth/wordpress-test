@@ -1,9 +1,7 @@
 filebeat.inputs:
   - type: log
-    paths: /var/percona-data/audit.log
+    paths: /var/db_data/audit.log
     json.keys_under_root: true
-
-setup.kibana.host: "http://localhost:5601"
 
 output.elasticsearch:
   hosts: ["elasticsearch:9200"]

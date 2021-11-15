@@ -6,6 +6,8 @@ services:
     image: percona:latest
     volumes:
       - ./db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./my.cnf:/etc/my.cnf.d/my.cnf
     ports:
       - "13306:3306"
     environment:
@@ -35,7 +37,7 @@ services:
     container_name: es
     image: "docker.elastic.co/elasticsearch/elasticsearch:7.15.1"
     volumes:
-      - ./es-data:/usr/share/elasticsearch/data
+      - ./es_data:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
     environment:
@@ -59,7 +61,7 @@ services:
     image: "docker.elastic.co/beats/filebeat:7.15.1"
     user: root
     volumes:
-      - ./percona-data:/var/percona-data:ro
+      - ./db_data:/var/db_data:ro
       - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
     networks:
       - elk
