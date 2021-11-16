@@ -6,6 +6,7 @@ services:
     image: percona:latest
     volumes:
       - ./db_data:/var/lib/mysql
+      - ./backup:/var/backup
     ports:
       - "13306:3306"
     environment:
